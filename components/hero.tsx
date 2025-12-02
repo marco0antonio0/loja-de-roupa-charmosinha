@@ -12,9 +12,8 @@ import {
 import Autoplay from "embla-carousel-autoplay"
 
 const carouselImages = [
-  "/carrosel/Gemini_Generated_Image_88cypm88cypm88cy.png",
-  "/carrosel/Gemini_Generated_Image_hlpnuhlpnuhlpnuh.png",
-  "/carrosel/Gemini_Generated_Image_jt2gkqjt2gkqjt2g.png",
+  "/carrosel/Gemini_Generated_Image_gphmsggphmsggphm.png",
+  "/carrosel/WhatsApp Image 2025-12-02 at 19.02.31.jpeg",
 ]
 
 export function Hero() {
