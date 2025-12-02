@@ -30,7 +30,8 @@ export function generateWhatsAppMessage(items: CartItem[], totalPrice: number): 
 
 export function generateWhatsAppURL(message: string): string {
   const encodedMessage = encodeURIComponent(message)
-  return `https://wa.me/${cachedWhatsAppNumber}?text=${encodedMessage}`
+  const phoneNumber = cachedWhatsAppNumber.replace(/\D/g, '') // Remove non-digits
+  return `https://wa.me/${phoneNumber}?text=${encodedMessage}`
 }
 
 export function openWhatsApp(items: CartItem[], totalPrice: number): void {

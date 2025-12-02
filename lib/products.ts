@@ -3,7 +3,7 @@ export interface Product {
   name: string
   price: number
   image: string
-  category?: string
+  category: string
   sizes?: string[]
   description?: string
   inStock?: boolean
@@ -11,34 +11,67 @@ export interface Product {
 
 export async function getProducts(): Promise<Product[]> {
   try {
-    const response = await fetch("https://api-charmosinha.netlify.app/api/endpoint/Az2YrSZjvVgj3USlfCJO")
+    const response = await fetch("https://api-charmosinha.netlify.app/api/endpoint/yUeLxgrmtSOKU8joYhJF", {
+      cache: "no-store" // Sempre busca dados frescos da API
+    })
+
     const data = await response.json()
 
     // Transform API data to match our Product interface
-    return data.items.map((item: any) => ({
+    const products = data.items.map((item: any) => ({
       id: item.id,
       name: item.data.titulo,
-      price: item.data.preco,
+      price: Number(item.data.preco),
       image: item.data.imagem,
-      category: "Roupas",
-      sizes: ["P", "M", "G", "GG"], // Default sizes since API doesn't provide them
+      category: item.data.categoria || "geral",
+      sizes: ["P", "M", "G", "GG"], 
       description: item.data.titulo,
       inStock: true,
     }))
+
+    return products || []
   } catch (error) {
     console.error("Error fetching products:", error)
     return []
   }
 }
 
-export function getProductById(id: string): Product | undefined {
-  // This will need to be async in real usage, but keeping sync for compatibility
-  return undefined
+export async function getProductById(id: string): Promise<Product | undefined> {
+  const products = await getProducts()
+  return products.find(p => p.id === id)
 }
 
-export function getProductsByCategory(category: string): Product[] {
-  // This will need to be async in real usage, but keeping sync for compatibility
-  return []
+export async function getProductsByCategory(category: string): Promise<Product[]> {
+  const products = await getProducts()
+  
+  // Se for "Geral", retorna TODOS os produtos
+  if (category.toLowerCase() === "geral") {
+    return products
+  }
+  
+  // Caso contrário, filtra pela categoria específica
+  return products.filter(p => p.category.toLowerCase() === category.toLowerCase())
 }
 
-export const categories = ["Roupas"]
+export async function getCategories(): Promise<string[]> {
+  try {
+    const response = await fetch("https://api-charmosinha.netlify.app/api/endpoint/nAZdbrp0Nfk1NXknU16J", {
+      cache: "no-store" // Sempre busca dados frescos da API
+    })
+    const data = await response.json()
+    
+    // Extract category names from API and capitalize first letter
+    const categories = data.items.map((item: any) => {
+      const nome = item.data.nome as string
+      return nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase()
+    })
+    
+    return categories.sort()
+  } catch (error) {
+    console.error("Error fetching categories:", error)
+    // Fallback to products categories if API fails
+    const products = await getProducts()
+    const categories = Array.from(new Set(products.map(p => p.category)))
+    return categories.sort()
+  }
+}

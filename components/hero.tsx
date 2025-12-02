@@ -1,75 +1,78 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { useCart } from "@/contexts/cart-context"
-import { useEffect, useState } from "react"
-import { getStoreInfo, type StoreInfo } from "@/lib/store-info"
+import Image from "next/image"
+import { useState } from "react"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
+
+const carouselImages = [
+  "/carrosel/Gemini_Generated_Image_88cypm88cypm88cy.png",
+  "/carrosel/Gemini_Generated_Image_hlpnuhlpnuhlpnuh.png",
+  "/carrosel/Gemini_Generated_Image_jt2gkqjt2gkqjt2g.png",
+]
 
 export function Hero() {
-  const { toggleCart } = useCart()
-  const [storeInfo, setStoreInfo] = useState<StoreInfo | null>(null)
-
-  useEffect(() => {
-    getStoreInfo().then(setStoreInfo)
-  }, [])
+  const [plugin] = useState(() => 
+    Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
+  )
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-purple-50 py-20 px-4">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-pink-200/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-pink-100/20 to-purple-100/20 rounded-full blur-3xl animate-spin-slow"></div>
+    <section className="relative w-full bg-gradient-to-br from-pink-50/30 via-white to-purple-50/30 py-3 md:py-6">
+      <Carousel
+        opts={{
+          align: "center",
+          loop: true,
+        }}
+        plugins={[plugin]}
+        className="w-full max-w-[1600px] mx-auto"
+      >
+        <CarouselContent>
+          {carouselImages.map((image, index) => (
+            <CarouselItem key={index}>
+              <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] md:aspect-[3/1] overflow-hidden rounded-xl md:rounded-2xl mx-2 md:mx-4 shadow-xl md:shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent z-10"></div>
+                
+                {/* Badges Promocionais */}
+                {index === 0 && (
+                  <div className="absolute top-4 left-4 md:top-8 md:left-8 z-20 space-y-2">
+                    <div className="bg-red-500 text-white px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-sm md:text-xl shadow-2xl animate-bounce">
+                      MEGA PROMOÇÃO
+                    </div>
+                    <div className="bg-yellow-400 text-black px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-xs md:text-lg shadow-xl">
+                      ATÉ 50% OFF
+                    </div>
+                  </div>
+                )}
+                
+                <Image
+                  src={image}
+                  alt={`Banner ${index + 1}`}
+                  fill
+                  className="object-cover hover:scale-[1.02] transition-transform duration-1000 ease-out"
+                  priority={index === 0}
+                  quality={95}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1600px"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-6 md:left-8 h-12 w-12 md:h-14 md:w-14 bg-white/95 hover:bg-white shadow-2xl border-0 hover:scale-110 transition-all" />
+        <CarouselNext className="right-6 md:right-8 h-12 w-12 md:h-14 md:w-14 bg-white/95 hover:bg-white shadow-2xl border-0 hover:scale-110 transition-all" />
+      </Carousel>
+      
+      {/* Indicadores de slide */}
+      <div className="flex justify-center gap-2 mt-6 pb-2">
+        {carouselImages.map((_, index) => (
+          <div key={index} className="h-2 w-2 rounded-full bg-pink-400/60 hover:bg-pink-500 transition-colors cursor-pointer"></div>
+        ))}
       </div>
-
-      <div className="container mx-auto text-center relative z-10">
-        <div className="animate-fade-in-up">
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-6 text-balance">
-            Descubra Seu Estilo Perfeito
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto text-pretty">
-            {storeInfo?.sobre
-              ? storeInfo.sobre.split("\n")[0] + " Finalize sua compra pelo WhatsApp para um atendimento personalizado."
-              : "Navegue pela nossa coleção cuidadosamente selecionada de roupas premium. Finalize sua compra pelo WhatsApp para um atendimento personalizado."}
-          </p>
-          <Button
-            size="lg"
-            className="text-lg px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transform hover:scale-105 transition-all duration-200 shadow-lg"
-            onClick={toggleCart}
-          >
-            Ver Carrinho
-          </Button>
-        </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes spin-slow {
-          from {
-            transform: translate(-50%, -50%) rotate(0deg);
-          }
-          to {
-            transform: translate(-50%, -50%) rotate(360deg);
-          }
-        }
-        
-        .animate-fade-in-up {
-          animation: fade-in-up 1s ease-out;
-        }
-        
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-      `}</style>
     </section>
   )
 }
