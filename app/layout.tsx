@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: "Charmosinha",
     images: [
       {
-        url: '/image-preview.png',  
+        url: 'https://charmosinha.netlify.app/image-preview.png',  
         width: 1200,
         height: 630,
         alt: "Preview da loja Charmosinha - Moda com Preço Baixo em Belém",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Charmosinha | Moda com Preço Baixo em Belém, PA",
     description: "Cansado de pagar caro? Venha para a Charmosinha em Belém e renove seu guarda-roupa gastando pouco!",
-    images: ['/image-preview.png'],  
+    images: ['https://charmosinha.netlify.app/image-preview.png'],  
   },
 
  
